@@ -1,5 +1,6 @@
 ﻿using StudentClass.Data.Models;
 using System.Security.Claims;
+using StudentClass.ViewModels.UserPass;
 
 namespace StudentClass.Data.Interfaces
 {
@@ -7,6 +8,8 @@ namespace StudentClass.Data.Interfaces
     {
         IEnumerable<User> Users { get; }
         User GetById(int id);
-        ClaimsIdentity getClaims(ViewModels.UserPass.LoginViewModel loginViewModel);
+        ClaimsIdentity getClaims(LoginViewModel loginViewModel);
+        void RegisterUser(RegisterViewModel registerViewModel);
+        bool IsEmailExist(string email);
     }
 }

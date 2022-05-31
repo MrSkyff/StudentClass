@@ -20,21 +20,42 @@ namespace StudentClass.Data.Repository
 
         public ClaimsIdentity getClaims(LoginViewModel loginViewModel)
         {
-            var currentUser = context.Users.FirstOrDefault(x=>x.Email.ToLower().Equals(loginViewModel.Email.ToLower()));
+            var currentUser = context.Users.FirstOrDefault(x => x.Email.ToLower().Equals(loginViewModel.Email.ToLower()));
             if (currentUser != null)
             {
-                String heshPassword = SecurityHelper.HashPassword(loginViewModel.Pass, currentUser.Salt, 10101, 70);
-                if(heshPassword.Equals(currentUser.HashPassword))
+                String heshPassword = SecurityHelper.HashPassword(loginViewModel.Pass, currentUser.Salt, 58, 43);
+                if (heshPassword.Equals(currentUser.HashPassword))
                 {
                     var claims = new List<Claim> { new Claim("Id", currentUser.Id.ToString()) };
-                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,"Cookies");
+                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
                     return claimsIdentity;
                 }
             }
-           
+
             return null;
         }
 
+        public bool IsEmailExist(string email)
+        {
+            return context.Users.Any(x => x.Email.ToLower().Equals(email.ToLower()));
+        }
 
+        public void RegisterUser(RegisterViewModel registerViewModel)
+        {
+            string salt = SecurityHelper.GenerateSalt(43);
+            string hashPass = SecurityHelper.HashPassword(registerViewModel.Pass, salt, 58, 43);
+
+            context.Users.Add(new User()
+            {
+                FirstName = registerViewModel.FirstName,
+                LastName = registerViewModel.LastName,
+                Email = registerViewModel.Email,
+                Salt = salt,
+                HashPassword = hashPass
+            });
+
+            context.SaveChanges();
+
+        }
     }
 }

@@ -10,14 +10,20 @@ using StudentClass.Data.Repository;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMvc(x=>x.EnableEndpointRouting = false);
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => options.LoginPath = "/login");
+//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => options.LoginPath = "/login");
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        options.SlidingExpiration = true;
+        options.AccessDeniedPath = "/Forbidden/";
+        options.LogoutPath = "/login";
+    });
 builder.Services.AddAuthorization();
 
 IConfigurationRoot _confString = new ConfigurationBuilder().SetBasePath(AppDomain.CurrentDomain.BaseDirectory).AddJsonFile("appsettings.json").Build();
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(_confString.GetConnectionString("DefaultConnection")));
-//builder.Services.AddTransient<IUser, UserRepository>();
-//builder.Services.AddTransient<SecurityHelper>();
-ExtendedProgram.WebApplicationBuilder(builder);
+ExtendedProgram.WebApplicationBuilder(builder); //builder.Services.AddTransient all there 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

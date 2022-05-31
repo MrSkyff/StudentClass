@@ -10,7 +10,7 @@ namespace StudentClass.ViewModels.UserPass
         [Required(ErrorMessage = "Last name is not set!")]
         public string? LastName { get; set; }
 
-        [Remote(action: "IsEmailExist", controller: "Home", ErrorMessage = "Email is not exist!")]
+        [Remote(action: "IsEmailNotExist", controller: "Home", ErrorMessage = "Email already used!")]
         [DataType(DataType.EmailAddress, ErrorMessage = "Email not valid!")]
         [Required(ErrorMessage = "Email is not set!")]
         public string? Email { get; set; }
