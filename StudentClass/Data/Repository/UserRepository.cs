@@ -23,7 +23,7 @@ namespace StudentClass.Data.Repository
             var currentUser = context.Users.FirstOrDefault(x => x.Email.ToLower().Equals(loginViewModel.Email.ToLower()));
             if (currentUser != null)
             {
-                String heshPassword = SecurityHelper.HashPassword(loginViewModel.Pass, currentUser.Salt, 58, 43);
+                string heshPassword = SecurityHelper.HashPassword(loginViewModel.Pass, currentUser.Salt, 58, 43);
                 if (heshPassword.Equals(currentUser.HashPassword))
                 {
                     var claims = new List<Claim> { new Claim("Id", currentUser.Id.ToString()) };

@@ -1,0 +1,22 @@
+﻿@model UserInvite
+
+@{
+}
+<form method="post">
+    <div>
+        <label asp-for="FirstName"></label>
+        <input type="text" asp-for="FirstName" />
+    </div>
+    <div>
+        <label asp-for="LastName"></label>
+        <input type="text" asp-for="LastName" />
+    </div>
+        <div>
+        <label asp-for="EMail"></label>
+        <input type="text" asp-for="EMail" />
+    </div>
+    <div>
+        @Html.DropDownListFor(x=>x.RoleId, new SelectList(Model.RoleSelector, "Id", "Name"))
+    </div>
+    <input type="submit" name="Create invite" />
+</form>

@@ -8,6 +8,7 @@ namespace StudentClass
         public static void WebApplicationBuilder(WebApplicationBuilder builder)
         {
             builder.Services.AddTransient<IUser, UserRepository>();
+            builder.Services.AddTransient<IUserInvite, UserInviteRepository>();
         }
 
     }
