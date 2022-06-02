@@ -1,6 +1,12 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
 }
 Hello authorised !!!
+<div>@User.Identity!.Name</div>
+<div>@User.FindFirst("Id")!.Value</div>
+<div>User.FindAll("Role")
+
+@foreach (var item in User.FindAll("Role"))
+{
+    @item.Value
+}
+</div>

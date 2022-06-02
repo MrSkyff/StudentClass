@@ -9,6 +9,8 @@ namespace StudentClass.Areas.Account.Controllers
     {
         public IActionResult Index()
         {
+            var user = HttpContext.User.Identity;
+            var userName = user.Name;
             return View();
         }
     }

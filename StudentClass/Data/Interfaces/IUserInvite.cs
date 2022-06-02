@@ -6,5 +6,10 @@ namespace StudentClass.Data.Interfaces
     {
         IEnumerable<Role> GetRolesSelectList();
         void SaveCreate(UserInvite model);
+        IEnumerable<UserInvite> GetInviteList();
+        UserInvite GetUserInviteCode(string inviteCode);
+        bool IsInviteEmailExist(string email);
+        UserInvite GetInviteById(int id);
+        UserInvite GetInviteByEMail(string eMail);
     }
 }

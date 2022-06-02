@@ -15,6 +15,12 @@ namespace StudentClass.Data.Models
         public string? CreatedBy { get; set; }
         public int Status { get; set; }
         public int RoleId { get; set; }
-        public IEnumerable<Role> RoleSelector { get; set; }
+    }
+    public enum InviteStatus
+    {
+        Active,
+        Inactive,
+        Used,
+        Expired,
     }
 }

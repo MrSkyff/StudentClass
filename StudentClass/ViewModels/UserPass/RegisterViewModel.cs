@@ -23,6 +23,7 @@ namespace StudentClass.ViewModels.UserPass
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
         [Compare("Pass", ErrorMessage = "Password do not match.")]
-        public string ConfirmPass { get; set; }
+        public string? ConfirmPass { get; set; }
+        public bool InviteCode { get; set; }
     }
 }

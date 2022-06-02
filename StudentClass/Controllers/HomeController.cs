@@ -14,10 +14,12 @@ namespace StudentClass.Controllers
     public class HomeController : Controller
     {
         private readonly IUser users;
+        private readonly IUserInvite userInvite;
 
-        public HomeController(IUser users)
+        public HomeController(IUser users, IUserInvite userInvite)
         {
             this.users = users;
+            this.userInvite = userInvite;
         }
 
         public IActionResult Index()
@@ -76,10 +78,21 @@ namespace StudentClass.Controllers
             return View(model);
 
         }
-
-        public IActionResult Register()
+        [HttpGet]
+        public IActionResult Register(string inviteCode)
         {
-            return View();
+            UserInvite userInviteCheck = userInvite.GetUserInviteCode(inviteCode);
+            RegisterViewModel model = new RegisterViewModel();
+            if (userInviteCheck != null && userInviteCheck.Status == (int)InviteStatus.Active)
+            {
+                model.Email = userInviteCheck.EMail;
+                model.FirstName = userInviteCheck.FirstName;
+                model.LastName = userInviteCheck.LastName;
+                model.InviteCode = true;
+            }
+            else { model.InviteCode = false; }
+
+            return View(model);
         }
         [HttpPost]
         [AutoValidateAntiforgeryToken]
@@ -90,6 +103,11 @@ namespace StudentClass.Controllers
                 users.RegisterUser(model);
 
                 var claims = users.getClaims(new LoginViewModel { Email = model.Email, Pass = model.Pass });
+
+                UserInvite userInviteUpdate = userInvite.GetInviteByEMail(model.Email!);
+                userInviteUpdate.Status = (int)InviteStatus.Used;
+                userInvite.SaveCreate(userInviteUpdate);
+
                 if (claims != null)
                 {
                     HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claims));
@@ -99,28 +117,6 @@ namespace StudentClass.Controllers
                 {
                     ModelState.AddModelError("", "ERROR");
                 }
-                #region
-                //var newSalt = SecurityHelper.GenerateSalt(43);
-                //var newHash = SecurityHelper.HashPassword(model.Pass, newSalt, 58, 43);
-
-                //User user = new User()
-                //{
-                //    FirstName = model.FirstName,
-                //    LastName = model.LastName,
-                //    Email = model.Email,
-                //    HashPassword = newHash,
-                //    Salt = newSalt
-                //};
-                ////dbContext.Add(user);
-                ////dbContext.SaveChanges();
-                //var newModel = new LoginViewModel { Email = model.Email, Pass = model.Pass };
-                //var newClaim = users.getClaims(newModel);
-                //if (newClaim != null)
-                //{
-                //    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(newClaim));
-                //    return Redirect("/Account");
-                //}
-                #endregion
             }
             return View(model);
         }

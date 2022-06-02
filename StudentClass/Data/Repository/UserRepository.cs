@@ -1,4 +1,6 @@
-﻿using StudentClass.Data.Helpers;
+﻿
+using Microsoft.EntityFrameworkCore;
+using StudentClass.Data.Helpers;
 using StudentClass.Data.Interfaces;
 using StudentClass.Data.Models;
 using StudentClass.ViewModels.UserPass;
@@ -18,27 +20,44 @@ namespace StudentClass.Data.Repository
 
         public User GetById(int id) => context.Users.FirstOrDefault(u => u.Id == id);
 
-        public ClaimsIdentity getClaims(LoginViewModel loginViewModel)
+        public ClaimsPrincipal getClaims(LoginViewModel loginViewModel)
         {
             var currentUser = context.Users.FirstOrDefault(x => x.Email.ToLower().Equals(loginViewModel.Email.ToLower()));
+            
             if (currentUser != null)
-            {
+            { 
                 string heshPassword = SecurityHelper.HashPassword(loginViewModel.Pass, currentUser.Salt, 58, 43);
                 if (heshPassword.Equals(currentUser.HashPassword))
                 {
-                    var claims = new List<Claim> { new Claim("Id", currentUser.Id.ToString()) };
-                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
-                    return claimsIdentity;
+                    var userRoles = GetUserRoles(currentUser.Id);
+                    var claims = new List<Claim>
+                    {
+                        new Claim("Id", currentUser.Id.ToString()),
+                        new Claim(ClaimTypes.Name, currentUser.FirstName.ToString() + " " + currentUser.LastName),
+                        //new Claim(ClaimsIdentity.DefaultRoleClaimType, userRoles.ToString())
+                    };
+
+                    foreach (var item in userRoles)
+                    {
+                        claims.Add(new Claim("Role", item.Name));
+                    }
+
+                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "SC_Cookies");
+                    ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                    return claimsPrincipal;
                 }
             }
 
             return null;
         }
 
-        public bool IsEmailExist(string email)
+        public IEnumerable<Role> GetUserRoles(int id)
         {
-            return context.Users.Any(x => x.Email.ToLower().Equals(email.ToLower()));
+            return context.Roles.Include(r => r.UserRoles).Where(c=>c.UserRoles.Any(u=>u.UserId == id));
         }
+
+        public bool IsEmailExist(string email) => context.Users.Any(x => x.Email.ToLower().Equals(email.ToLower()));
+        
 
         public void RegisterUser(RegisterViewModel registerViewModel)
         {

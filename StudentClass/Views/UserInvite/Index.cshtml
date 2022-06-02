@@ -1,6 +1,44 @@
-﻿
+﻿@model IEnumerable<UserInvite>
+
 @{
 }
 
 
 <h1>User invite zone</h1>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">EMail</th>
+            <th scope="col">First name</th>
+            <th scope="col">Last name</th>
+            <th scope="col">Role</th>
+            <th scope="col">Created</th>
+            <th scope="col">Status</th>
+            <th scope="col">Created by</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>     
+            @foreach (var item in Model)
+            {
+                <tr>
+                <td> @item.EMail </td>
+                <td> @item.FirstName </td>
+                <td> @item.LastName </td>
+                <td> @item.RoleId </td>
+                <td> @item.Created </td>
+                
+                    @if (@item.Status == (int)InviteStatus.Active) {<td class="text-primary"> @InviteStatus.Active </td>}
+                    @if (@item.Status == (int)InviteStatus.Expired) {<td> @InviteStatus.Expired </td>}
+                    @if (@item.Status == (int)InviteStatus.Inactive) {<td class="text-secondary"> @InviteStatus.Inactive </td>}
+                    @if (@item.Status == (int)InviteStatus.Used) {<td class="text-warning"> @InviteStatus.Used </td>}
+                
+                <td> @item.CreatedBy</td>
+                <td> <a asp-controller="Home" asp-action="Register" asp-route-inviteCode="@item.InviteCode">Try invite code (TEMP)</a> </td>
+            </tr>
+            }   
+    </tbody>
+</table>
+<a asp-controller="UserInvite" asp-action="createinvite">create invite</a>

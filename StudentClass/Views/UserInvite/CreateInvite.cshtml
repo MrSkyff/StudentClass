@@ -1,4 +1,4 @@
-﻿@model UserInvite
+﻿@model StudentClass.ViewModels.UserInvite.UserInviteViewModel
 
 @{
 }
@@ -15,6 +15,7 @@
         <label asp-for="EMail"></label>
         <input type="text" asp-for="EMail" />
     </div>
+    <span asp-validation-for="EMail" class="text-danger"></span>
     <div>
         @Html.DropDownListFor(x=>x.RoleId, new SelectList(Model.RoleSelector, "Id", "Name"))
     </div>

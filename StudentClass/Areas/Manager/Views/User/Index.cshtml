@@ -1,0 +1,27 @@
+﻿@model IEnumerable<StudentClass.Data.Models.User>
+@{
+}
+<h1>User manager</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Roles</th>
+            <th scope="col">Actions</th>
+
+        </tr>
+    </thead>
+    <tbody>     
+            @foreach (var item in Model)
+            {
+                <tr>
+                <td> <a asp-controller="Student" asp-action="Show" asp-route-id="@item.Id">@item.FirstName @item.LastName</a></td>
+                <td> @item.Email </td>
+                <td> @item.UserRoles </td>
+                <td> <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a href="#">Delete</a> </td>
+            </tr>
+            }   
+    </tbody>
+</table>
+<a asp-area="" asp-controller="UserInvite" asp-action="createinvite">create invite</a>

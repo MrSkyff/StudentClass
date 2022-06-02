@@ -8,8 +8,9 @@ namespace StudentClass.Data.Interfaces
     {
         IEnumerable<User> Users { get; }
         User GetById(int id);
-        ClaimsIdentity getClaims(LoginViewModel loginViewModel);
+        ClaimsPrincipal getClaims(LoginViewModel loginViewModel);
         void RegisterUser(RegisterViewModel registerViewModel);
         bool IsEmailExist(string email);
+        IEnumerable<Role> GetUserRoles(int id);
     }
 }

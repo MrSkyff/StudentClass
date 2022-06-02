@@ -11,19 +11,34 @@ namespace StudentClass.Data.Repository
         {
             this.dbContext = dbContext;
         }
-        public IEnumerable<Role> GetRolesSelectList()
+
+        public UserInvite GetInviteByEMail(string eMail) => dbContext.UserInvites.FirstOrDefault(x => x.EMail == eMail)!;
+        
+
+        public UserInvite GetInviteById(int id)
         {
-            //IEnumerable<Role> selectedLists = new List<Role>()
-            //{
-            //new Role{ Id = 1, Name = "Admin" },
-            //new Role{ Id = 2, Name = "Teacher" },
-            //new Role{ Id = 3, Name = "Student" }
-            //};
-            //var selected = selectedLists;
+            throw new NotImplementedException();
+        }
 
-            var selected = dbContext.Roles.ToList();
+        public IEnumerable<UserInvite> GetInviteList()
+        {
+            return dbContext.UserInvites;
+        }
 
-            return selected;
+        public IEnumerable<Role> GetRolesSelectList() => dbContext.Roles;
+
+        public UserInvite GetUserInviteCode(string inviteCode)
+        {
+            return dbContext.UserInvites.SingleOrDefault(x => x.InviteCode == inviteCode);
+        }
+
+        public bool IsInviteEmailExist(string email)
+        {
+            List<bool> list = new List<bool>();
+            list.Add(dbContext.UserInvites.Any(x => x.EMail.ToLower().Equals(email.ToLower())));
+            list.Add(dbContext.Users.Any(x => x.Email.ToLower().Equals(email.ToLower())));
+
+            return list.Any(c => c);
         }
 
         public void SaveCreate(UserInvite model)
